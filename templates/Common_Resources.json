@@ -1,0 +1,457 @@
+{
+    "ROSTemplateFormatVersion": "2015-09-01",
+    "Description": "Common resources for SAP automatic deployment, including windows RDP and ActionTrail.",
+    "Parameters": {
+        "ZoneId": {
+            "Type": "String",
+            "AssociationProperty": "ALIYUN::ECS::Instance:ZoneId",
+            "Description": "可用区列表请参考, <a href='https://help.aliyun.com/document_detail/40654.html' target='_blank'>地域和可用区信息</a>",
+            "Label": "期望部署的可用区"
+        },
+        "VpcId": {
+            "Type": "String",
+            "AssociationProperty": "ALIYUN::ECS::VPC::VPCId",
+            "Description": "控制台-VPC-专有网络下查询",
+            "Label": "现有VPC的实例ID"
+        },
+        "VSwitchId": {
+            "Type": "String",
+            "AssociationProperty": "ALIYUN::ECS::VSwitch::VSwitchId",
+            "Description": "控制台-VPC-专有网络-交换机下查询",
+            "Label": "现有VSwitch的实例ID"
+        },
+        "LoginPassword": {
+            "Type": "String",
+            "Description": "HANA ECS root passowrd",
+            "Label": "root Passowrd",
+            "AllowedPattern": "^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\\W_]+$)(?![a-z0-9]+$)(?![a-z\\W_]+$)(?![0-9\\W_]+$)[a-zA-Z0-9\\W_]{8,}$",
+            "ConstraintDescription": "8-30 characters,include(capital letter,lowercase letter,numbers or special characters)",
+            "NoEcho": true,
+            "Confirm": true
+        },
+        "ActionTrailCondition": {
+            "Type": "Boolean",
+            "Description": "是否添加操作审计（ActionTrail）功能",
+            "Label": "操作审计",
+            "Default": false
+        },
+        "ActionTrailOssBucketName": {
+            "Type": "String",
+            "Description": "填写用于存储日志文件的已有的OSS bucket名称.例：mybucket",
+            "Label": "日志存储Bucket Name",
+            "Default": ""
+        },
+        "SystemDiskCategory": {
+            "Default": "cloud_ssd",
+            "AllowedValues": [
+                "cloud_efficiency",
+                "cloud_ssd",
+                "cloud_essd"
+            ],
+            "Description": "系统盘分类：高效云盘，SSD云盘，ESSD云盘（PL1）",
+            "Label": "系统盘类型",
+            "Type": "String"
+        },
+        "WindowsRDPImageId": {
+            "Type": "String",
+            "Description": "跳板机操作系统版本",
+            "Label": "跳板机操作系统版本",
+            "Default": "win2016",
+            "AllowedValues": [
+                "win2016",
+                "win2012",
+                "win2008"
+            ]
+        },
+        "WindowsRDPHostname": {
+            "Type": "String",
+            "Description": "跳板机的主机名",
+            "Label": "跳板机主机名",
+            "Default": "SAPWindowsRDP"
+        },
+        "WindowsRDPCondition": {
+            "Type": "Boolean",
+            "Description": "是否需要创建跳板机",
+            "Label": "跳板机",
+            "Default": false
+        },
+        "WindowsRDPInstanceType": {
+            "Type": "String",
+            "Description": "<font color='blue'><b>1.选择机型前请先确认当前可用区下该机型是否有货，部分机型需要提前报备</b></font><br><font color='blue'><b>2.可选机型列表</b></font><br>[ecs.sn2ne.large<font color='green'>(2vCPUs,8GiB)</font>]<br>[ecs.sn2ne.xlarge<font color='green'>(4vCPUs,16GiB)</font>]<br>[ecs.sn1ne.large<font color='green'>(2vCPUs,4GiB)</font>]<br>[ecs.sn1ne.xlarge<font color='green'>(4vCPUs,8GiB)</font>]<br>[ecs.g5.large<font color='green'>(2vCPUs,8GiB)</font>]<br>[ecs.g5.xlarge<font color='green'>(4vCPUs,16GiB)</font>]<br>[ecs.c5.large<font color='green'>(2vCPUs,4GiB)</font>]<br>[ecs.c5.xlarge<font color='green'>(4vCPUs,8GiB)</font>]<br><font color='blue'>3.详情请参考</font><a href='https://help.aliyun.com/document_detail/25378.html'target='_blank'><b>实例族详情</b></a>",
+            "Label": "跳板机机型",
+            "Default": "ecs.g5.large(2vCPUs 8GiB)",
+            "AllowedValues": [
+                "ecs.sn2ne.large(2vCPUs 8GiB)",
+                "ecs.sn2ne.xlarge(4vCPUs 16GiB)",
+                "ecs.sn1ne.large(2vCPUs 4GiB)",
+                "ecs.sn1ne.xlarge(4vCPUs 8GiB)",
+                "ecs.g5.large(2vCPUs 8GiB)",
+                "ecs.g5.xlarge(4vCPUs 16GiB)",
+                "ecs.c5.large(2vCPUs 4GiB)",
+                "ecs.c5.xlarge(4vCPUs 8GiB)"
+            ]
+        }
+    },
+    "Metadata": {
+        "ALIYUN::ROS::Interface": {
+            "TemplateTags": [
+                "SAP"
+            ],
+            "ParameterGroups": [
+                {
+                    "Label": {
+                        "default": "基础资源配置（必填)"
+                    },
+                    "Parameters": [
+                        "ZoneId",
+                        "VpcId",
+                        "VSwitchId",
+                        "LoginPassword",
+                        "SystemDiskCategory"
+                    ]
+                },
+                {
+                    "Label": {
+                        "default": "WindowsRDP(可选)"
+                    },
+                    "Parameters": [
+                        "WindowsRDPCondition",
+                        "WindowsRDPHostname",
+                        "WindowsRDPImageId",
+                        "WindowsRDPInstanceType"
+                    ]
+                },
+                {
+                    "Label": {
+                        "default": "操作审计(可选)"
+                    },
+                    "Parameters": [
+                        "ActionTrailCondition",
+                        "ActionTrailOssBucketName"
+                    ]
+                }
+            ]
+        }
+    },
+    "Conditions": {
+        "CreateWindowsRDPCondition": {
+            "Ref": "WindowsRDPCondition"
+        },
+        "CreateActionTrailCondition": {
+            "Ref": "ActionTrailCondition"
+        }
+    },
+    "Mappings": {
+        "WinImageMap": {
+            "zh": {
+                "win2016": "win2016_64_dtc_1607_zh-cn_40G_alibase_20190718.vhd",
+                "win2012": "win2012r2_64_dtc_9600_zh-cn_40G_alibase_20190718.vhd",
+                "win2008": "win2008r2_64_ent_sp1_zh-cn_40G_alibase_20190718.vhd"
+            },
+            "en": {
+                "win2016": "win2016_64_dtc_1607_en-us_40G_alibase_20190718.vhd",
+                "win2012": "win2012r2_64_dtc_9600_en-us_40G_alibase_20190718.vhd",
+                "win2008": "win2008r2_64_ent_sp1_en-us_40G_alibase_20190718.vhd"
+            }
+        },
+        "InstanceTypeMap": {
+            "ecs.c5.large(2vCPUs 4GiB)": {
+                "InstanceTypeId": "ecs.c5.large"
+            },
+            "ecs.c5.xlarge(4vCPUs 8GiB)": {
+                "InstanceTypeId": "ecs.c5.xlarge"
+            },
+            "ecs.g5.2xlarge(8vCPUs 30GiB)": {
+                "InstanceTypeId": "ecs.g5.2xlarge"
+            },
+            "ecs.g5.3xlarge(12vCPUs 48GiB)": {
+                "InstanceTypeId": "ecs.g5.3xlarge"
+            },
+            "ecs.g5.4xlarge(16vCPUs 64GiB)": {
+                "InstanceTypeId": "ecs.g5.4xlarge"
+            },
+            "ecs.g5.6xlarge(24vCPUs 96GiB)": {
+                "InstanceTypeId": "ecs.g5.6xlarge"
+            },
+            "ecs.g5.8xlarge(32vCPUs 128GiB)": {
+                "InstanceTypeId": "ecs.g5.8xlarge"
+            },
+            "ecs.g5.large(2vCPUs 8GiB)": {
+                "InstanceTypeId": "ecs.g5.large"
+            },
+            "ecs.g5.xlarge(4vCPUs 16GiB)": {
+                "InstanceTypeId": "ecs.g5.xlarge"
+            },
+            "ecs.r5.16xlarge(64vCPUs 512GiB)": {
+                "InstanceTypeId": "ecs.r5.16xlarge"
+            },
+            "ecs.r5.2xlarge(8vCPUs 64GiB)": {
+                "InstanceTypeId": "ecs.r5.2xlarge"
+            },
+            "ecs.r5.3xlarge(12vCPUs 96GiB)": {
+                "InstanceTypeId": "ecs.r5.3xlarge"
+            },
+            "ecs.r5.4xlarge(16vCPUs 128GiB)": {
+                "InstanceTypeId": "ecs.r5.4xlarge"
+            },
+            "ecs.r5.6xlarge(24vCPUs 192GiB)": {
+                "InstanceTypeId": "ecs.r5.6xlarge"
+            },
+            "ecs.r5.8xlarge(32vCPUs 256GiB)": {
+                "InstanceTypeId": "ecs.r5.8xlarge"
+            },
+            "ecs.r5.large(2vCPUs 16GiB)": {
+                "InstanceTypeId": "ecs.r5.large"
+            },
+            "ecs.r5.xlarge(4vCPUs 32GiB)": {
+                "InstanceTypeId": "ecs.r5.xlarge"
+            },
+            "ecs.re4.20xlarge(80vCPUs 960GiB)": {
+                "InstanceTypeId": "ecs.re4.20xlarge"
+            },
+            "ecs.re4.40xlarge(160vCPUs 1920GiB)": {
+                "InstanceTypeId": "ecs.re4.40xlarge"
+            },
+            "ecs.re4e.40xlarge(160vCPUs 3840GiB)": {
+                "InstanceTypeId": "ecs.re4e.40xlarge"
+            },
+            "ecs.se1.14xlarge(56vCPUs 480GiB)": {
+                "InstanceTypeId": "ecs.se1.14xlarge"
+            },
+            "ecs.sn1ne.large(2vCPUs 4GiB)": {
+                "InstanceTypeId": "ecs.sn1ne.large"
+            },
+            "ecs.sn1ne.xlarge(4vCPUs 8GiB)": {
+                "InstanceTypeId": "ecs.sn1ne.xlarge"
+            },
+            "ecs.sn2ne.14xlarge (56vCPUs 224GiB)": {
+                "InstanceTypeId": "ecs.sn2ne.14xlarge "
+            },
+            "ecs.sn2ne.2xlarge(8vCPUs 32GiB)": {
+                "InstanceTypeId": "ecs.sn2ne.2xlarge"
+            },
+            "ecs.sn2ne.3xlarge(12vCPUs 48GiB)": {
+                "InstanceTypeId": "ecs.sn2ne.3xlarge"
+            },
+            "ecs.sn2ne.4xlarge(16vCPUs 64GiB)": {
+                "InstanceTypeId": "ecs.sn2ne.4xlarge"
+            },
+            "ecs.sn2ne.6xlarge(24vCPUs 96GiB)": {
+                "InstanceTypeId": "ecs.sn2ne.6xlarge"
+            },
+            "ecs.sn2ne.8xlarge(32vCPUs 128GiB)": {
+                "InstanceTypeId": "ecs.sn2ne.8xlarge"
+            },
+            "ecs.sn2ne.large(2vCPUs 8GiB)": {
+                "InstanceTypeId": "ecs.sn2ne.large"
+            },
+            "ecs.sn2ne.xlarge(4vCPUs 16GiB)": {
+                "InstanceTypeId": "ecs.sn2ne.xlarge"
+            }
+        }
+    },
+    "Resources": {
+        "ActionTrail": {
+            "Type": "ALIYUN::ACTIONTRAIL::Trail",
+            "Condition": "CreateActionTrailCondition",
+            "Properties": {
+                "OssBucketName": {
+                    "Ref": "ActionTrailOssBucketName"
+                },
+                "Name": {
+                    "Fn::Join": [
+                        "-",
+                        [
+                            "SAP-ActionTrail",
+                            {
+                                "Fn::Select": [
+                                    "0",
+                                    {
+                                        "Fn::Split": [
+                                            "-",
+                                            {
+                                                "Ref": "ALIYUN::StackId"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                },
+                "RoleName": {
+                    "Fn::GetAtt": [
+                        "ActionTrailRole",
+                        "RoleName"
+                    ]
+                }
+            }
+        },
+        "ActionTrailLogging": {
+            "Type": "ALIYUN::ACTIONTRAIL::TrailLogging",
+            "Condition": "CreateActionTrailCondition",
+            "Properties": {
+                "Name": {
+                    "Fn::GetAtt": [
+                        "ActionTrail",
+                        "Name"
+                    ]
+                },
+                "Enable": true
+            }
+        },
+        "ActionTrailRole": {
+            "Type": "ALIYUN::RAM::Role",
+            "Condition": "CreateActionTrailCondition",
+            "Properties": {
+                "RoleName": {
+                    "Fn::Join": [
+                        "",
+                        [
+                            "SAPActionTrailRole-",
+                            {
+                                "Ref": "ALIYUN::StackId"
+                            }
+                        ]
+                    ]
+                },
+                "AssumeRolePolicyDocument": {
+                    "Statement": [
+                        {
+                            "Action": "sts:AssumeRole",
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "actiontrail.aliyuncs.com"
+                                ]
+                            }
+                        }
+                    ],
+                    "Version": "1"
+                },
+                "Policies": [
+                    {
+                        "PolicyName": {
+                            "Fn::Join": [
+                                "",
+                                [
+                                    "SAPActionTrailRolePolicy-",
+                                    {
+                                        "Ref": "ALIYUN::StackId"
+                                    }
+                                ]
+                            ]
+                        },
+                        "PolicyDocument": {
+                            "Statement": [
+                                {
+                                    "Action": [
+                                        "oss:*"
+                                    ],
+                                    "Effect": "Allow",
+                                    "Resource": [
+                                        "*"
+                                    ]
+                                },
+                                {
+                                    "Action": [
+                                        "actiontrail:*"
+                                    ],
+                                    "Resource": [
+                                        "*"
+                                    ],
+                                    "Effect": "Allow"
+                                }
+                            ],
+                            "Version": "1"
+                        }
+                    }
+                ]
+            }
+        },
+        "WindowsRDP": {
+            "Type": "ALIYUN::ECS::Instance",
+            "Condition": "CreateWindowsRDPCondition",
+            "Properties": {
+                "HostName": {
+                    "Ref": "WindowsRDPHostname"
+                },
+                "SystemDiskSize": "100",
+                "SystemDiskCategory": {
+                    "Ref": "SystemDiskCategory"
+                },
+                "IoOptimized": "optimized",
+                "ImageId": {
+                    "Fn::FindInMap": [
+                        "WinImageMap",
+                        "zh",
+                        {
+                            "Ref": "WindowsRDPImageId"
+                        }
+                    ]
+                },
+                "SecurityGroupId": {
+                    "Fn::GetAtt": [
+                        "WindowsRDPSecurityGroup",
+                        "SecurityGroupId"
+                    ]
+                },
+                "Password": {
+                    "Ref": "LoginPassword"
+                },
+                "AllocatePublicIP": "true",
+                "VSwitchId": {
+                    "Ref": "VSwitchId"
+                },
+                "VpcId": {
+                    "Ref": "VpcId"
+                },
+                "InstanceType": {
+                    "Fn::FindInMap": [
+                        "InstanceTypeMap",
+                        {
+                            "Ref": "WindowsRDPInstanceType"
+                        },
+                        "InstanceTypeId"
+                    ]
+                },
+                "DiskMappings": [
+                    {
+                        "Category": "cloud_ssd",
+                        "Size": "400"
+                    }
+                ]
+            }
+        },
+        "WindowsRDPSecurityGroup": {
+            "Type": "ALIYUN::ECS::SecurityGroup",
+            "Condition": "CreateWindowsRDPCondition",
+            "Properties": {
+                "VpcId": {
+                    "Ref": "VpcId"
+                },
+                "SecurityGroupName": "WindowsRDP_sg",
+                "SecurityGroupIngress": [
+                    {
+                        "PortRange": "3389/3389",
+                        "Priority": 1,
+                        "SourceCidrIp": "0.0.0.0/0",
+                        "IpProtocol": "tcp",
+                        "NicType": "intranet"
+                    }
+                ]
+            }
+        }
+    },
+    "Outputs": {
+        "WindowsRDPPublicIP": {
+            "Condition": "CreateWindowsRDPCondition",
+            "Value": {
+                "Fn::GetAtt": [
+                    "WindowsRDP",
+                    "PublicIp"
+                ]
+            }
+        }
+    }
+}
