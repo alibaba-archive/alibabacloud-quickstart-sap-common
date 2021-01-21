@@ -5,7 +5,7 @@
 #Author: Alibaba Cloud, SAP Product & Solution Team
 ######################################################################
 #Tool versions
-QUICKSTART_SAP_COMMON_VERSION='1.0'
+QUICKSTART_SAP_COMMON_VERSION='1.0.2'
 
 
 ######################################################################
@@ -715,7 +715,7 @@ function sbd_config(){
     quorum_disk="/dev/${quorum_disk}"
     expect << EOF
     set timeout 180
-    spawn sbd -d "${quorum_disk}" create 
+    spawn sbd -d "${quorum_disk}" create
     expect {
             "*initialized*" {send "\r";}
             timeout {exit 2 }

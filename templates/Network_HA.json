@@ -10,7 +10,7 @@
                 "en": "The Availability Zone where HANA instance will be deployed"
             },
             "Label": {
-                "zh-cn": "期望部署的可用区",
+                "zh-cn": "部署的可用区",
                 "en": "Availability Zones"
             }
         },

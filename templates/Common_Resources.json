@@ -6,7 +6,7 @@
             "Type": "String",
             "AssociationProperty": "ALIYUN::ECS::Instance:ZoneId",
             "Description": "可用区列表请参考, <a href='https://help.aliyun.com/document_detail/40654.html' target='_blank'>地域和可用区信息</a>",
-            "Label": "期望部署的可用区"
+            "Label": "部署的可用区"
         },
         "VpcId": {
             "Type": "String",
@@ -42,7 +42,7 @@
             "Default": ""
         },
         "SystemDiskCategory": {
-            "Default": "cloud_ssd",
+            "Default": "cloud_essd",
             "AllowedValues": [
                 "cloud_efficiency",
                 "cloud_ssd",
@@ -161,6 +161,9 @@
             "ecs.c5.xlarge(4vCPUs 8GiB)": {
                 "InstanceTypeId": "ecs.c5.xlarge"
             },
+            "ecs.c5.8xlarge(32vCPUs 64GiB)": {
+                "InstanceTypeId": "ecs.c5.8xlarge"
+            },
             "ecs.g5.2xlarge(8vCPUs 30GiB)": {
                 "InstanceTypeId": "ecs.g5.2xlarge"
             },
@@ -181,6 +184,30 @@
             },
             "ecs.g5.xlarge(4vCPUs 16GiB)": {
                 "InstanceTypeId": "ecs.g5.xlarge"
+            },
+            "ecs.g6.large(2vCPUs 8GiB)": {
+                "InstanceTypeId": "ecs.g6.large"
+            },
+            "ecs.g6.xlarge(4vCPUs 16GiB)": {
+                "InstanceTypeId": "ecs.g6.xlarge"
+            },
+            "ecs.g6.2xlarge(8vCPUs 32GiB)": {
+                "InstanceTypeId": "ecs.g6.2xlarge"
+            },
+            "ecs.g6.3xlarge(12vCPUs 48GiB)": {
+                "InstanceTypeId": "ecs.g6.3xlarge"
+            },
+            "ecs.g6.4xlarge(16vCPUs 64GiB)": {
+                "InstanceTypeId": "ecs.g6.4xlarge"
+            },
+            "ecs.g6.6xlarge(24vCPUs 96GiB)": {
+                "InstanceTypeId": "ecs.g6.6xlarge"
+            },
+            "ecs.g6.8xlarge(32vCPUs 128GiB)": {
+                "InstanceTypeId": "ecs.g6.8xlarge"
+            },
+            "ecs.re6.13xlarge(52vCPUs 768GiB)":{
+                "InstanceTypeId": "ecs.re6.13xlarge"
             },
             "ecs.r5.16xlarge(64vCPUs 512GiB)": {
                 "InstanceTypeId": "ecs.r5.16xlarge"
@@ -206,8 +233,38 @@
             "ecs.r5.xlarge(4vCPUs 32GiB)": {
                 "InstanceTypeId": "ecs.r5.xlarge"
             },
+            "ecs.r6.large(2vCPUs 16GiB)": {
+                "InstanceTypeId": "ecs.r6.large"
+            },
+            "ecs.r6.xlarge(4vCPUs 32GiB)": {
+                "InstanceTypeId": "ecs.r6.xlarge"
+            },
+            "ecs.r6.2xlarge(8vCPUs 64GiB)": {
+                "InstanceTypeId": "ecs.r6.2xlarge"
+            },
+            "ecs.r6.3xlarge(12vCPUs 96GiB)": {
+                "InstanceTypeId": "ecs.r6.3xlarge"
+            },
+            "ecs.r6.4xlarge(16vCPUs 128GiB)": {
+                "InstanceTypeId": "ecs.r6.4xlarge"
+            },
+            "ecs.r6.6xlarge(24vCPUs 192GiB)": {
+                "InstanceTypeId": "ecs.r6.6xlarge"
+            },
+            "ecs.r6.8xlarge(32vCPUs 256GiB)": {
+                "InstanceTypeId": "ecs.r6.8xlarge"
+            },
+            "ecs.r6.13xlarge(52vCPUs 384GiB)": {
+                "InstanceTypeId": "ecs.r6.13xlarge"
+            },
+            "ecs.re6.26xlarge(104vCPUs 1536GiB)": {
+                "InstanceTypeId": "ecs.re6.26xlarge"
+            },
             "ecs.re4.20xlarge(80vCPUs 960GiB)": {
                 "InstanceTypeId": "ecs.re4.20xlarge"
+            },
+            "ecs.re6.52xlarge(208vCPUs 3072GiB)": {
+                "InstanceTypeId": "ecs.re6.52xlarge"
             },
             "ecs.re4.40xlarge(160vCPUs 1920GiB)": {
                 "InstanceTypeId": "ecs.re4.40xlarge"
@@ -247,6 +304,63 @@
             },
             "ecs.sn2ne.xlarge(4vCPUs 16GiB)": {
                 "InstanceTypeId": "ecs.sn2ne.xlarge"
+            },
+            "ecs.ebmre6-6t.52xlarge(208vCPUs 6144GiB)": {
+                "InstanceTypeId": "ecs.ebmre6-6t.52xlarge"
+            },
+            "ecs.g6e.large(2vCPUs 8GiB)": {
+                "InstanceTypeId": "ecs.g6e.large"
+            },
+            "ecs.g6e.xlarge(4vCPUs 16GiB)": {
+                "InstanceTypeId": "ecs.g6e.xlarge"
+            },
+            "ecs.g6e.2xlarge(8vCPUs 32GiB)": {
+                "InstanceTypeId": "ecs.g6e.2xlarge"
+            },
+            "ecs.g6e.4xlarge(16vCPUs 64GiB)": {
+                "InstanceTypeId": "ecs.g6e.4xlarge"
+            },
+            "ecs.g6e.6xlarge(24vCPUs 96GiB)": {
+                "InstanceTypeId": "ecs.g6e.6xlarge"
+            },
+            "ecs.g6e.8xlarge(32vCPUs 128GiB)": {
+                "InstanceTypeId": "ecs.g6e.8xlarge"
+            },
+            "ecs.r6e.large(2vCPUs 16GiB)": {
+                "InstanceTypeId": "ecs.r6e.large"
+            },
+            "ecs.r6e.xlarge(4vCPUs 32GiB)": {
+                "InstanceTypeId": "ecs.r6e.xlarge"
+            },
+            "ecs.r6e.2xlarge(8vCPUs 64GiB)": {
+                "InstanceTypeId": "ecs.r6e.2xlarge"
+            },
+            "ecs.r6e.4xlarge(16vCPUs 128GiB)": {
+                "InstanceTypeId": "ecs.r6e.4xlarge"
+            },
+            "ecs.r6e.6xlarge(24vCPUs 192GiB)": {
+                "InstanceTypeId": "ecs.r6e.6xlarge"
+            },
+            "ecs.r6e.8xlarge(32vCPUs 256GiB)": {
+                "InstanceTypeId": "ecs.r6e.8xlarge"
+            },
+            "ecs.c6e.large(2vCPUs 4GiB)": {
+                "InstanceTypeId": "ecs.c6e.large"
+            },
+            "ecs.c6e.xlarge(4vCPUs 8GiB)": {
+                "InstanceTypeId": "ecs.c6e.xlarge"
+            },
+            "ecs.c6e.2xlarge(8vCPUs 16GiB)": {
+                "InstanceTypeId": "ecs.c6e.2xlarge"
+            },
+            "ecs.c6e.4xlarge(16vCPUs 32GiB)": {
+                "InstanceTypeId": "ecs.c6e.4xlarge"
+            },
+            "ecs.c6e.6xlarge(24vCPUs 48GiB)": {
+                "InstanceTypeId": "ecs.c6e.6xlarge"
+            },
+            "ecs.c6e.8xlarge(32vCPUs 64GiB)": {
+                "InstanceTypeId": "ecs.c6e.8xlarge"
             }
         }
     },
@@ -417,7 +531,7 @@
                 },
                 "DiskMappings": [
                     {
-                        "Category": "cloud_ssd",
+                        "Category": "cloud_essd",
                         "Size": "400"
                     }
                 ]
