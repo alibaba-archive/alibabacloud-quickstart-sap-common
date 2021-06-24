@@ -5,7 +5,7 @@
 #Author: Alibaba Cloud, SAP Product & Solution Team
 ######################################################################
 #Tool versions
-QUICKSTART_SAP_COMMON_VERSION='1.0.2'
+QUICKSTART_SAP_COMMON_VERSION='1.0.3'
 
 
 ######################################################################
@@ -777,6 +777,18 @@ function res_validation(){
 ######################################################################
 # Install SAP related software functions
 ######################################################################
+#Define update_pyyaml function
+function update_pyyaml(){
+    # fix : unpacking of archive failed on file /usr/lib64/python3.6/site-packages/PyYAML-5.3.1-py3.6.egg-info: cpio: File from package already exists as a directory in system
+    if pip list 2>&1 | grep  -q PyYAML
+    then
+        pip uninstall -y PyYAML
+        rm -rf /usr/lib64/python3.6/site-packages/PyYAML*
+        rm -rf /usr/lib64/python3.4/site-packages/PyYAML*
+    fi
+    # pip install PyYAML --upgrade > /dev/null
+}
+
 #Define single_node_install package
 function single_node_packages(){
     install_package uuidd saptune
@@ -785,6 +797,7 @@ function single_node_packages(){
 
 #Define HA_install function
 function HA_packages(){
+    update_pyyaml
     single_node_packages
     install_package sbd pacemaker corosync SAPHanaSR patterns-ha-ha_sles resource-agents
 }
